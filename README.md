@@ -14,3 +14,6 @@ In the context of 2016 U.S. presidential election, Allcott and Gentzkow (2017) s
 # Data 
 [Link to the dataset](https://www.openicpsr.org/openicpsr/project/113992/version/V1/view)
 
+# Notes 
+Commit and push 
+
