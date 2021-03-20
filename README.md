@@ -13,6 +13,9 @@ In the context of 2016 U.S. presidential election, Allcott and Gentzkow (2017) s
 
 # Data 
 [Link to the dataset](https://www.openicpsr.org/openicpsr/project/113992/version/V1/view)
+1. Post election survey 
+2. Fake news stories about Donald Trump 
+3. Fake news stories about Hilary Clinton
 
 # Notes 
 Commit and push 
