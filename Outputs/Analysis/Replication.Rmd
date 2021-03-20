@@ -87,6 +87,10 @@ names(Survey_clean)[3:65] <- paste("i", formatC(1:63, width = 2, flag = "0"), se
 The first two columns do not relate to the survey content, remove. 
 
 
+
+
+
+
 ```{r}
  saveRDS(Survey, file = "/Users/dans/Documents/Github/Social_media_fake_news/Inputs/Data/113992-V1/election-media-JEP-replication/source/raw/Inputs/Data/PostElectionSurvey/survey.rData")
 ```
@@ -100,17 +104,16 @@ survey <- load("/Users/dans/Documents/Github/Social_media_fake_news/Inputs/Data/
 
 # Abstract 
 
-In the theoretical framework of the economics of fake news,Hunt Allcott and Matthew Gentzkow (2017) conducted a survey and disvovered 
-
-we confirm that fake news was both widely shared and heavily tilted
-in favor of Donald Trump. Our database contains 115 pro-Trump fake stories that
-were shared on Facebook a total of 30 million times, and 41 pro-Clinton fake stories
-shared a total of 7.6 million times.
+In the theoretical framework of the economics of fake news,Hunt Allcott and Matthew Gentzkow (2017) conducted a survey and discovered that fake news was widely shared in favor of Donald Trump.
 
 
 # Intro 
 Survey 
-congragate data 
+
+# Data 
+Post election survey 
+115 pro-Trump fake stories
+41 pro-Clinton fake stories
 
 # EDA 
 
