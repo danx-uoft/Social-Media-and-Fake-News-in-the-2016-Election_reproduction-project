@@ -10,6 +10,7 @@ This paper is a replication of Hunt Allcott and Matthew Gentzkow's(2017) researc
 
 # Intro 
 In the context of 2016 U.S. presidential election, Allcott and Gentzkow (2017) surveyed 1200 respondents. They found that fake news was disproportionally in favor of Donald Trump. 
+To begin with, this paper conducted some exploratory data analysis with the post-election survey and lends support to the authors' claim that the sample is skewed towards young, highly educated, Caucasian women. The survey questions of can be broken down into three sections, 1) How do respodents get informed? 2) Voting behavior; 3) How do respondents interact with social media? 4) A battery of fourteen fake news questions. 
 
 
 # Data 
