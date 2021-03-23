@@ -312,6 +312,11 @@ Load the survey
 # survey <- load("/Users/dans/Documents/Github/Social_media_fake_news/Inputs/Data/113992-V1/election-media-JEP-replication/source/raw/Inputs/Data/PostElectionSurvey/survey.rData")
 ```
 
+## Summary of the EDA
+
+The battery of the fake news survey questions do not seem to contraditary to each other. 
+The sample is highly skewed towards female. 
+
 
 # Abstract 
 
@@ -319,7 +324,7 @@ In the theoretical framework of the economics of fake news,Hunt Allcott and Matt
 
 
 # Intro 
-Survey 
+
 
 # Data 
 Post election survey 
@@ -447,27 +452,9 @@ test %>%
 
 
 
-```{r}
-survey_data %>%
-  pivot_longer(Q1:Q6, names_to = "question", values_to = "response") %>%
-  ggplot(aes(y = response, x = question)) +
-  geom_boxplot() +
-  labs(x = "Question", y = "Response (on a 1 to 5 scale)")
-```
 
 # EDA relationships 
 
-histograms 
-```{r}
-
-```
-
-violin graphs
-```{r}
-colnames(Survey_clean)
-
-
-```
 
 Compared to the national sample 
 ```{r}
@@ -547,7 +534,6 @@ conspiracy_list$theory_new = paste(conspiracy_list$year, conspiracy_list$theory,
 ```
 plot
 ```{r}
-library(ggthemes)
 conspiracy_list %>% 
   ggplot(aes(factor(theory_new),believe)) +
   geom_col() +
@@ -564,7 +550,14 @@ conspiracy_list %>%
         #panel.border = element_rect(colour = "black", size=1),
         axis.line = element_line(colour = "black",size = .5)) 
 #https://stackoverflow.com/questions/10861773/remove-grid-background-color-and-top-and-right-borders-from-ggplot2 
+
+# To save the ggplot as png
+ggsave(path = "/Users/dans/Documents/Github/Social_media_fake_news/Outputs/Plots", filename = "fig1.png")
+
 ``` 
+
+Figure 2
+Trends Related to Fake News
 
 
 
