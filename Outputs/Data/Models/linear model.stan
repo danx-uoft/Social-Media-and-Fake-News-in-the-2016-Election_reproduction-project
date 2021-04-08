@@ -10,6 +10,5 @@ parameters {
   real<lower=0> sigma;  // error scale
 }
 model {
-  for (n in 1:N)
-    y[n] ~ normal(x[n] * beta, sigma);  // likelihood
+  y ~ normal(x * beta + alpha, sigma);  // likelihood
 }
