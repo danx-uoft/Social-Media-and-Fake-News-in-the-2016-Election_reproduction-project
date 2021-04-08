@@ -247,8 +247,7 @@ plot1 <- ExpNumViz(Survey_clean,target=NULL,nlim=10,Page=c(2,2),sample=4)
 plot1[[1]]
 ```
 
-frequency for all categorical independent variables
-```{r}
+
 # frequency for all categorical independent variables
 ExpCTable(Survey_clean,Target=NULL,margin=1,clim=10,nlim=3,round=2,bin=NULL,per=T)
 
@@ -262,11 +261,8 @@ summary(Survey_clean[,"income"])
 # Summary statistics when dependent variable is continuous incomoe
 # (Correlation between Target variable vs all independet variables)
 ExpNumStat(Survey_clean,by="A",gp="income",Qnt=seq(0,1,0.1),MesofShape=1,Outlier=TRUE,round=2)
-```
 
-Graphical representation of all numeric variables
-#Note: sample=8 means randomly selected 8 scatter plots
-#Note: nlim=4 means included numeric variable with unique value is more than 4
+
 plot3 <- ExpNumViz(Survey_clean,target="income",nlim=4,scatter=FALSE,fname=NULL,col="green",Page=c(2,2),sample=8)
 plot3[[1]]
 
@@ -274,8 +270,7 @@ plot3[[1]]
 plot31 <- ExpNumViz(Survey_clean,target="education",nlim=4,scatter=TRUE,fname=NULL,Page=c(2,1),sample=4)
 plot31[[1]]
 
-# frequency for all categorical independent variables by descretized partisanship
-## bin=4, descretized 4 categories based on quantiles
+
 ExpCTable(Survey_clean,Target="partyid",margin=1,clim=10,round=2,bin=4,per=F)
 
 
@@ -284,3 +279,104 @@ qqp <- ExpOutQQ(Survey_clean,nlim=10,fname=NULL,Page=c(2,2),sample=4)
 qqp[[1]]
 
 ExpParcoord(Survey_clean,Group=NULL,Stsize=NULL,Nvar=c("age","education","partyid"))
+
+
+# Survey weights 
+# Raking 
+For public opinion surveys, researchers use multiple methods to adjust unweighted samples. One of the most prevant method for weighting is iterative proportional fitting, which is also referred to as raking. With raking, researchers select "a set of variables where the population distribution is known, and the procedure iteratively adjusts the weight for each case until the sample distribution aligns with the population for those variables (Pew[cite])." In this study, to adjust the weights, I will select a few variables, such as party identification, gender,education to match the desired population distribution. Then the weights obtained will be adjusted so that the sample in the correct proportion.As mentioned earlier, Raking is  relatively simple to implement as it only requires knowing the marginal proportions for each variable used in weighting.
+
+
+# clean data without NAs
+survey_cleanse <- as.data.frame(na.omit(Survey_clean))
+```
+
+
+#recode ethnicity to two groups, white vs. non white 
+survey_cleanse$ethnicity<- 
+  fct_collapse(survey_cleanse$ethnicity,
+               White = c("White / Caucasian"),
+               Non.White = c("American Indian or Alaskan Native","Asian or Pacific Islander","Black or African American","Hispanic","Other"))
+
+
+# recode education 
+# Educ_BachelorsOrMore 0.2673650
+# Educ_HSOrLess 0.4197737
+# Educ_Other 0.3128613
+
+survey_cleanse$education<- 
+  fct_collapse(survey_cleanse$education,
+               Educ_BachelorsOrMore = c("Bachelor's degree","Graduate degree (for example: MA, MBA, JD, PhD)"),
+               Educ_HSOrLess = c("Less than a high school diploma","High school diploma or equivalent (for example: GED)"),
+               Educ_Other = c("Some college but no degree","Associate's degree"))
+
+
+library(weights)
+
+wpct(survey_cleanse$gender)
+# gender
+#  male    female 
+# 0.3438557 0.6561443 
+
+wpct(survey_cleanse$partyid)
+# partyid
+# Democratic Independent  Republican 
+#  0.3788050   0.3664036   0.2547914 
+
+wpct(survey_cleanse$age)
+#        2         3         4         5 
+# 0.2311161 0.2818489 0.2423901 0.2446449 
+wpct(survey_cleanse$education)
+# Educ_HSOrLess           Educ_Other Educ_BachelorsOrMore 
+#     0.2175874            0.2998873            0.4825254
+
+wpct(survey_cleanse$ethnicity)
+# Non.White     White 
+# 0.1871477 0.8128523 
+
+
+# variables reassigned weights
+gender <- c(0.4867939,0.5132061)
+education <- c(0.4197737,0.3128613,0.2673650)
+ethnicity <- c(0.384,0.6160000) # white vs. non white 
+partyid <- c(0.3684771,0.3429180,0.2886049)
+# the Chilean Census 2002
+# age  <- c(.163, .203, .195, .187, .253)
+
+
+#Turn them into numeric variables 
+survey_cleanse$gender <- as.numeric(survey_cleanse$gender)
+survey_cleanse$education <- as.numeric(survey_cleanse$education)
+survey_cleanse$ethnicity <- as.numeric(survey_cleanse$ethnicity)
+survey_cleanse$partyid <- as.numeric(survey_cleanse$partyid)
+
+
+# definitions of target list
+targets <- list(gender,education,ethnicity,partyid)
+# important: to use the same variable names of the dataset
+names(targets) <- c("gender","education","ethnicity","partyid")
+# id variable
+survey_cleanse$caseid <- 1:length(survey_cleanse$gender)
+
+
+
+library(anesrake)
+
+# I apply the anesrake function as follows:
+# The maximum weight value is five, weights greater than five will be truncated (cap = 5).
+# The total differences between population and sample have to be greater than 0.05 so that to include a variable (pctlim = .05).
+# The maximum number of variables included in the raking procedure is five (nlim = 5).
+
+outsave <- anesrake(targets, survey_cleanse, caseid = survey_cleanse$caseid,
+                    verbose= FALSE, cap = 5, choosemethod = "total",
+                    type = "pctlim", pctlim = .05 , nlim = 5,
+                    iterate = TRUE , force1 = TRUE)
+
+
+#add weights to dataset
+survey_cleanse$weightvec  <- unlist(outsave[1])
+n  <- length(survey_cleanse$gender)
+
+
+# weighting loss
+((sum(survey_cleanse$weightvec ^ 2) / (sum(survey_cleanse$weightvec)) ^ 2) * n) - 1
+```
