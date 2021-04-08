@@ -23,4 +23,5 @@ To begin with, this paper conducted some exploratory data analysis with the post
 - cannot commit and push 
 - cnanot knit to pdf due to tex?
 - remember to .RProect rather than point to local directory
+- a lot of stan functions cannot be knitted, figure out why
 
